@@ -57,15 +57,15 @@ class MediaContent(models.Model):
 
     def get_content_path(self, filename):
         cls = self._get_ct()
-        return u'%s/%s/%s/%s' % (CONTENT_MEDIA_PATH, cls._meta.module_name, self.object_pk, filename)
+        return u'%s/%s/%s/%s' % (CONTENT_MEDIA_PATH, cls._meta.app_label, self.object_pk, filename)
     
     def get_thumb_path(self, filename):
         cls = self._get_ct()
-        return u'%s/%s/%s/thumbnail_%s' % (CONTENT_MEDIA_PATH, cls._meta.module_name, self.mimetype, filename)
+        return u'%s/%s/%s/thumbnail_%s' % (CONTENT_MEDIA_PATH, cls._meta.app_label, self.mimetype, filename)
 
     def get_gallery_path(self, filename):
         cls = self._get_ct()
-        return u'%s/%s/%s/gallery_%s' % (CONTENT_MEDIA_PATH, cls._meta.module_name, self.mimetype, filename)
+        return u'%s/%s/%s/gallery_%s' % (CONTENT_MEDIA_PATH, cls._meta.app_label, self.mimetype, filename)
 
     def content_path(self, filename):
         return self.get_content_path(filename)
