@@ -5,13 +5,16 @@
 # Distributed under the BSD license, see LICENSE
 from setuptools import setup, find_packages
 import sys, os
-from tagembed import version
+from mediacontent import version
 
 setup(name='django-mediacontent', 
         version=version, 
         description="App para incluir contenido media (imagenes y otros archivos)",
         packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
         include_package_data=True,
+        install_requires=[
+          'Pillow',
+        ],
         zip_safe=False,
         author='Xavier Lesa',
         author_email='xavierlesa@gmail.com',

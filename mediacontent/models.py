@@ -7,9 +7,12 @@ import mimetypes
 import datetime
 import os
 try:
-    from PIL import Image
+    from Pillow import Image
 except ImportError:
-    import Image
+    try:
+        from PIL import Image
+    except ImportError:
+        import Image
 
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
