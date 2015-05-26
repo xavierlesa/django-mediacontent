@@ -59,6 +59,19 @@ class MediaContentManager(models.Manager):
         return qs
 
 
+def get_content_path(instance, filename):
+    cls = instance._get_ct()
+    return u'%s/%s/%s/%s' % (CONTENT_MEDIA_PATH, cls._meta.app_label, instance.object_pk, filename)
+
+def get_thumb_path(instance, filename):
+    cls = instance._get_ct()
+    return u'%s/%s/%s/thumbnail_%s' % (CONTENT_MEDIA_PATH, cls._meta.app_label, instance.mimetype, filename)
+
+def get_gallery_path(instance, filename):
+    cls = instance._get_ct()
+    return u'%s/%s/%s/gallery_%s' % (CONTENT_MEDIA_PATH, cls._meta.app_label, instance.mimetype, filename)
+
+
 class MediaContent(models.Model):
     def _get_ct(self):
         mcls = ContentType.objects.get(pk=self.content_type.pk)
@@ -71,18 +84,6 @@ class MediaContent(models.Model):
         except mcls.model_class().DoesNotExist:
             cls = mcls.model_class()
         return cls
-
-    def get_content_path(self, filename):
-        cls = self._get_ct()
-        return u'%s/%s/%s/%s' % (CONTENT_MEDIA_PATH, cls._meta.app_label, self.object_pk, filename)
-    
-    def get_thumb_path(self, filename):
-        cls = self._get_ct()
-        return u'%s/%s/%s/thumbnail_%s' % (CONTENT_MEDIA_PATH, cls._meta.app_label, self.mimetype, filename)
-
-    def get_gallery_path(self, filename):
-        cls = self._get_ct()
-        return u'%s/%s/%s/gallery_%s' % (CONTENT_MEDIA_PATH, cls._meta.app_label, self.mimetype, filename)
 
     def content_path(self, filename):
         return self.get_content_path(filename)
@@ -108,9 +109,9 @@ class MediaContent(models.Model):
     thumbnail_only = models.BooleanField(default=False, help_text="Indica si se usa como thumbnail del objeto asociado")
     gallery_only = models.BooleanField(default=False, help_text="Indica si se usa para gallery del objeto asociado")
     
-    content = models.FileField(upload_to=content_path, max_length=300)
-    thumbnail = models.ImageField(upload_to=thumb_path, blank=True, max_length=300)
-    gallery = models.ImageField(upload_to=gallery_path, blank=True, max_length=300)
+    content = models.FileField(upload_to=get_content_path, max_length=300)
+    thumbnail = models.ImageField(upload_to=get_thumb_path, blank=True, max_length=300)
+    gallery = models.ImageField(upload_to=get_gallery_path, blank=True, max_length=300)
 
     #hay que actualizar la DB y generar todas las fechas por defecto
     pub_date = models.DateTimeField(blank=True)
