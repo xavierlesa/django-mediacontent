@@ -6,6 +6,10 @@ Una app para cargar contenidos multimedia
 import mimetypes
 import datetime
 import os
+
+import logging
+logger = logging.getLogger(__name__)
+
 try:
     from Pillow import Image
 except ImportError:
@@ -32,7 +36,20 @@ CONTENT_MEDIA_SIZE = getattr(settings, 'CONTENT_MEDIA_SIZE', def_sizes)
 CONTENT_MEDIA_PATH = getattr(settings, 'CONTENT_MEDIA_PATH', 'mediacontent')
 
 
+class MediaContentQuerySet(models.QuerySet): 
+    def get_thumbnail(self):
+        logger.debug('Filtrando solo thumbnail')
+        return self.filter(thumbnail_only=True)
+
+    def get_gallery(self):
+        logger.debug('Filtrando solo gallery')
+        return self.filter(gallery_only=True)
+
+
 class MediaContentManager(models.Manager):
+    def get_queryset(self):
+        return MediaContentQuerySet(self.model, using=self._db)
+
     def get_for_model(self, model):
         ct = ContentType.objects.get_for_model(model)
         qs = self.get_queryset().filter(content_type=ct)
@@ -88,17 +105,21 @@ class MediaContent(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     
+    thumbnail_only = models.BooleanField(default=False, help_text="Indica si se usa como thumbnail del objeto asociado")
+    gallery_only = models.BooleanField(default=False, help_text="Indica si se usa para gallery del objeto asociado")
+    
     content = models.FileField(upload_to=content_path, max_length=300)
     thumbnail = models.ImageField(upload_to=thumb_path, blank=True, max_length=300)
     gallery = models.ImageField(upload_to=gallery_path, blank=True, max_length=300)
 
     #hay que actualizar la DB y generar todas las fechas por defecto
     pub_date = models.DateTimeField(blank=True)
+    sort_order = models.IntegerField(null=True, blank=True)
 
     objects = MediaContentManager()
 
     class Meta:
-        ordering = ('pub_date','id')
+        ordering = ('sort_order', 'pub_date')
 
 
     def __init__(self, *args, **kwargs):
@@ -164,7 +185,6 @@ class MediaContent(models.Model):
 
 
         elif (not self.thumbnail or not self.gallery or changed_image) and content_type == 'application_pdf':
-            print 'carga un pdf'
 
             # Crea una imagen de la primer pagina de un PDF
             from subprocess import call

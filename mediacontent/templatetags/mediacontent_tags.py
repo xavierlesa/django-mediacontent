@@ -152,6 +152,11 @@ def get_media_by_title(context, title=''):
 
     return ''
 
+
+@register.filter
+def filter_media_by_title(obj, title=''):
+    return obj.filter(title=title)
+
 @register.filter
 def get_youtube_id(url):
     regexs = {
