@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.db import models
 from django.conf.urls import patterns, url
 from django import forms
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.admin import GenericStackedInline
 from django.contrib.admin.widgets import AdminFileWidget
 from django.utils.safestring import mark_safe
 from django.conf import settings
@@ -33,7 +33,7 @@ class AdminMediaContentWidget(AdminFileWidget):
         return mark_safe(u''.join(output))
 
 
-class MediaContentInline(generic.GenericStackedInline):
+class MediaContentInline(GenericStackedInline):
     model = MediaContent
     extra = 1
     ct_field = 'content_type'

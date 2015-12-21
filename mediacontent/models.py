@@ -22,7 +22,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils.encoding import force_unicode
 from mediacontent.utils import convert_to_rgb, crop_aspect, resize
 
@@ -100,7 +100,7 @@ class MediaContent(models.Model):
 
     content_type = models.ForeignKey(ContentType, verbose_name=_('content type'), related_name="content_type_set_for_%(class)s")
     object_pk = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_pk')
+    content_object = GenericForeignKey('content_type', 'object_pk')
     
     mimetype = models.CharField(max_length=100, blank=True)
     title = models.CharField(max_length=100)
