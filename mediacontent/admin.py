@@ -113,9 +113,12 @@ class MediaContentAdmin(admin.ModelAdmin):
             )
     
     def get_content_object(self, obj):
-        obj_url = urlresolvers.reverse('admin:%s_%s_change' % (
-            obj.content_object._meta.app_label, obj.content_object._meta.model_name),
-            args=(obj.content_object.id,))
+        if obj.content_object:
+            obj_url = urlresolvers.reverse('admin:%s_%s_change' % (
+                obj.content_object._meta.app_label, obj.content_object._meta.model_name),
+                args=(obj.content_object.id,))
+        else:
+            obj_url = '#'
 
         return u"<a href=\"%s\">%s</a>" % (obj_url, obj.content_object)
 
