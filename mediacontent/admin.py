@@ -113,7 +113,7 @@ class MediaContentAdmin(admin.ModelAdmin):
             )
     
     def get_content_object(self, obj):
-        if obj.content_object:
+        if obj and obj.content_object:
             obj_url = urlresolvers.reverse('admin:%s_%s_change' % (
                 obj.content_object._meta.app_label, obj.content_object._meta.model_name),
                 args=(obj.content_object.id,))
