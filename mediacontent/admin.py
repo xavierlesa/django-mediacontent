@@ -2,7 +2,7 @@
 import mimetypes
 from django.contrib import admin
 from django.db import models
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django import forms
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.contrib.admin.widgets import AdminFileWidget
@@ -149,12 +149,12 @@ class MediaContentAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super(MediaContentAdmin, self).get_urls()
         
-        my_urls = patterns('',
+        my_urls = [
             url(r'^_ajax/(?:(?P<mimetype>[\w]+)/)?(?:(?P<pk>[\d]+)/)?$', 
                 self.admin_site.admin_view(csrf_exempt(AjaxMediaAPIView.as_view())), 
                 name='ajax_mediacontent_api'
                 ), 
-        )
+        ]
 
         return my_urls + urls
 
